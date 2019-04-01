@@ -213,11 +213,44 @@ Where https://tzuvifn7ng.execute-api.us-east-2.amazonaws.com/Prod is the direct 
 		\item[$\bullet$] In the case of a \texttt{severe} selection, the application will make a request to ESGetLockScreenInfo to retrieve necessary personal information related to the user who pressed the S.O.S. button. 
 	\end{itemize}
 
+\begin{figure}[H]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/severity.PNG}
+  \caption{Client-side prompt requesting that the user select the emergency severity at the end of holding the S.O.S. button.}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{img/notification.png}
+  \caption{Example lockscreen data returned from the API as a result of invoking the S.O.S. button.}
+\endminipage\hfill
+\minipage{0.32\textwidth}%
+  \includegraphics[width=\linewidth]{img/broadcasted.png}
+  \caption{The state of the S.O.S. button after being invokved. As long as the button is in an invoked state, lockscreen information will be displayed.}
+\endminipage
+\end{figure}
+
 \subsection{2 - Emergency service locator}
-\par ~ This client feature depends on only one backend Lambda function. On the client side, whenever the user opens the service locator application, a single asynchronous HTTP POST request will be made, containing the user's current location extracted from the device using native permissions. ESServiceLocator will then response with a list of JSON objects each containing information about a hospital or pharmacy. The client will, using the data returned by ESServiceLocator, create a map markers. The markers will then be placed on a Google-style map for the viewing of the user. The Flutter package responsible for friendly displaying of the returned geo-data is a result of the \texttt{google\_maps\_flutter} plugin (\url{https://github.com/flutter/plugins/tree/master/packages/google\_maps\_flutter}.
+\par ~ This client feature depends on only one backend Lambda function. On the client side, whenever the user opens the service locator application, a single asynchronous HTTP POST request will be made, containing the user's current location extracted from the device using native permissions. ESServiceLocator will then response with a list of JSON objects each containing information about a hospital or pharmacy. The client will, using the data returned by ESServiceLocator, create a map markers. The markers will then be placed on a Google-style map for the viewing of the user. The Flutter package responsible for friendly displaying of the returned geo-data is a result of the \texttt{google\_maps\_flutter} plugin (\url{https://github.com/flutter/plugins/tree/master/packages/google\_maps\_flutter}).
+
+\begin{figure}[H]
+  \centerline{
+  	\includegraphics[scale=.8]{img/service-locator.PNG}
+  }  
+  \caption{Screenshot of the service locator map containing mock data.}
+\end{figure}
 
 \subsection{3 - Periodic notifications to contacts (location-based polling)}
-\par ~ A note that this feature has not been implemented, but it's implementation details are something that we have discussed since our SRS document. This client feature depends on only one backend lambda function. On the client side, a primitive \texttt{Thread}, provided by the \texttt{threading} package, will start whenever the client first registers for the application and enables the location-based polling feature. By default, the thread will sleep for 24 hours. At the end of the sleep, the client will make a single asynchronous HTTP POST request to ESPollLocation containing the user's id, and their location at the time of the API call.  
+\par ~ A note that this feature has not been implemented, but it's implementation details are something that we have discussed since our SRS document. This client feature depends on only one backend lambda function. On the client side, a primitive \texttt{Thread}, provided by the \texttt{threading} package, will start whenever the client first registers for the application and enables the location-based polling feature. By default, the thread will sleep for 24 hours. At the end of the sleep, the client will make a single asynchronous HTTP POST request to ESPollLocation containing the user's id, and their location at the time of the API call.
+
+\subsection{4 - Granular permission definitions for contacts}
+\par ~ This client feature depends on one backend Lambda function. On the client side, user's are able to add and removes users from their native contacts book. Each contact is then assigned an alert tier. Depending on their alert tier, depends on how detailed the location information that they receive is. For example, a user assigned alert tier 1 would be able to see  2500 Broadway, Lubbock, TX 79409, USA, but a user assigned a tier 3 alert tier would only see TX, USA.
+
+\begin{figure}[H]
+  \centerline{
+  	\includegraphics[scale=.8]{img/alert-tier.PNG}
+  }  
+  \caption{Client-side prompt containing alert tier selection for a single user.}
+\end{figure}
+
 \section{Continuous Integration / Continuous Deployment}
 \label{sec:cicd}
 \par ~ In this section, we will d
